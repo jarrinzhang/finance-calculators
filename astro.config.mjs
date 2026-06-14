@@ -7,8 +7,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // 部署前请改成你的实际域名（先注册 .com 域名，详见 README）
-  site: 'https://finance-calculators.pages.dev',
+  // 实际部署地址（Cloudflare Pages 免费子域名）
+  site: 'https://finance-calculators-a0a.pages.dev',
   integrations: [
     react(),
     sitemap({
