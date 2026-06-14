@@ -1,0 +1,93 @@
+/**
+ * calculators.ts - 计算器元数据
+ *
+ * 用于首页卡片渲染、Footer 链接、相关计算器推荐。
+ * 新增计算器时只需在此数组添加一项。
+ */
+
+export interface CalculatorMeta {
+  /** kebab-case URL slug */
+  slug: string;
+  /** 完整页面路径 */
+  path: string;
+  /** 卡片显示名 */
+  name: string;
+  /** 一句话描述 */
+  shortDesc: string;
+  /** SEO meta description（150 字符内） */
+  seoDescription: string;
+  /** SVG 图标内嵌（stroke 路径） */
+  icon: string;
+  /** 图标 emoji 备用 */
+  emoji: string;
+  /** 卡片背景色（Tailwind 渐变类） */
+  accent: string;
+}
+
+export const calculators: CalculatorMeta[] = [
+  {
+    slug: "mortgage-calculator",
+    path: "/calculators/mortgage-calculator",
+    name: "Mortgage Calculator",
+    shortDesc: "Estimate your monthly mortgage payments and full amortization schedule.",
+    seoDescription:
+      "Free mortgage calculator with monthly payment, total interest, and amortization schedule. Estimate your home loan payments instantly.",
+    icon: `<path d="M3 9.5L12 3l9 6.5"/><path d="M5 10v11h14V10"/>`,
+    emoji: "🏠",
+    accent: "from-blue-500 to-blue-700",
+  },
+  {
+    slug: "loan-calculator",
+    path: "/calculators/loan-calculator",
+    name: "Loan Calculator",
+    shortDesc: "Calculate monthly payments and total interest for any personal loan.",
+    seoDescription:
+      "Free loan calculator for personal loans. Calculate monthly payments, total interest, and repayment schedules for any loan amount.",
+    icon: `<rect x="2" y="6" width="20" height="12" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>`,
+    emoji: "💵",
+    accent: "from-emerald-500 to-emerald-700",
+  },
+  {
+    slug: "compound-interest-calculator",
+    path: "/calculators/compound-interest-calculator",
+    name: "Compound Interest Calculator",
+    shortDesc: "See how your money grows with the power of compound interest.",
+    seoDescription:
+      "Free compound interest calculator. See how your savings or investments grow over time with monthly or annual compounding.",
+    icon: `<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>`,
+    emoji: "📈",
+    accent: "from-violet-500 to-violet-700",
+  },
+  {
+    slug: "retirement-calculator",
+    path: "/calculators/retirement-calculator",
+    name: "Retirement Calculator",
+    shortDesc: "Project your retirement savings and monthly income after you stop working.",
+    seoDescription:
+      "Free retirement calculator. Project your nest egg at retirement, future monthly income, and see if you are on track for your goals.",
+    icon: `<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`,
+    emoji: "🌴",
+    accent: "from-amber-500 to-amber-700",
+  },
+  {
+    slug: "auto-loan-calculator",
+    path: "/calculators/auto-loan-calculator",
+    name: "Auto Loan Calculator",
+    shortDesc: "Find your monthly car payment and total cost of financing.",
+    seoDescription:
+      "Free auto loan calculator. Estimate monthly car payments, total interest, and overall cost for your next vehicle purchase.",
+    icon: `<path d="M5 17h14M5 17l1.5-5h11L19 17M5 17a2 2 0 1 0 4 0M15 17a2 2 0 1 0 4 0"/>`,
+    emoji: "🚗",
+    accent: "from-rose-500 to-rose-700",
+  },
+];
+
+/** 按 slug 查找 */
+export function getCalculator(slug: string): CalculatorMeta | undefined {
+  return calculators.find((c) => c.slug === slug);
+}
+
+/** 排除当前页，返回其它计算器（用于"相关计算器"模块） */
+export function getRelatedCalculators(currentSlug: string): CalculatorMeta[] {
+  return calculators.filter((c) => c.slug !== currentSlug);
+}

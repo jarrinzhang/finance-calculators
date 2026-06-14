@@ -1,0 +1,94 @@
+---
+/**
+ * Header - 全站顶部导航栏
+ */
+const navItems = [
+  { label: "Mortgage", href: "/calculators/mortgage-calculator" },
+  { label: "Loan", href: "/calculators/loan-calculator" },
+  { label: "Compound Interest", href: "/calculators/compound-interest-calculator" },
+  { label: "Retirement", href: "/calculators/retirement-calculator" },
+  { label: "Auto Loan", href: "/calculators/auto-loan-calculator" },
+];
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  currentPath === href || (href !== "/" && currentPath.startsWith(href));
+---
+
+<header class="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3" aria-label="Main navigation">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2 font-bold text-gray-900">
+      <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-800 text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-5 w-5">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+      </span>
+      <span class="text-lg tracking-tight">FinCalc<span class="text-brand-800"> Hub</span></span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <ul class="hidden items-center gap-1 md:flex">
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class={`rounded-md px-3 py-2 text-sm font-medium transition ${
+              isActive(item.href)
+                ? "bg-brand-50 text-brand-800"
+                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+            }`}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Mobile menu button -->
+    <button
+      type="button"
+      class="inline-flex items-center justify-center rounded-md p-2 text-gray-600 hover:bg-gray-100 md:hidden"
+      aria-label="Toggle menu"
+      data-mobile-menu-toggle
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-6 w-6">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="hidden border-t border-gray-200 bg-white md:hidden" data-mobile-menu>
+    <ul class="space-y-1 px-4 py-3">
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class={`block rounded-md px-3 py-2 text-sm font-medium ${
+              isActive(item.href)
+                ? "bg-brand-50 text-brand-800"
+                : "text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</header>
+
+<script is:inline>
+  // 极简移动端菜单切换
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.querySelector("[data-mobile-menu-toggle]");
+    const menu = document.querySelector("[data-mobile-menu]");
+    if (toggle && menu) {
+      toggle.addEventListener("click", () => menu.classList.toggle("hidden"));
+    }
+  });
+</script>

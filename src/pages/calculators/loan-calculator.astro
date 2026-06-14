@@ -1,0 +1,75 @@
+---
+/**
+ * Loan Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LoanCalculator from "../../components/calculators/LoanCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "loan-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <LoanCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How does the loan calculator work?</h2>
+    <p>
+      Enter the loan amount, the annual interest rate (APR), and the repayment term in years.
+      The calculator returns your monthly payment, total interest paid, and the total cost of
+      the loan. Use the quick-select buttons to compare common loan terms side by side.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">What can this calculator be used for?</h3>
+    <p>
+      It works for any fixed-rate installment loan, including personal loans, debt consolidation
+      loans, home improvement loans, student loans, and many business loans. For mortgages and
+      auto loans, our dedicated calculators add features like down payments and amortization
+      schedules.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Understanding APR vs interest rate</h3>
+    <p>
+      The <strong>interest rate</strong> is the cost of borrowing the principal. The
+      <strong>APR (annual percentage rate)</strong> includes the interest rate plus any origination
+      fees or other lender charges, making it a more complete picture of the loan's true cost.
+      Always compare APRs &mdash; not just interest rates &mdash; when shopping for a loan.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Typical personal loan rates</h3>
+    <ul>
+      <li><strong>Excellent credit (720+)</strong>: 6%&ndash;10% APR</li>
+      <li><strong>Good credit (690&ndash;719)</strong>: 11%&ndash;15% APR</li>
+      <li><strong>Fair credit (630&ndash;689)</strong>: 16%&ndash;20% APR</li>
+      <li><strong>Poor credit (below 630)</strong>: 21%&ndash;36% APR</li>
+    </ul>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

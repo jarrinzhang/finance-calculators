@@ -1,0 +1,90 @@
+---
+/**
+ * BaseLayout - 全站 HTML 骨架
+ *
+ * 引入：
+ * - 全局 CSS（Tailwind）
+ * - Inter 字体
+ * - Header / Footer
+ * - SEO 组件
+ * - AdSense 脚本（过审后才配置 client ID）
+ *
+ * 使用：
+ *   <BaseLayout title="..." description="..." path="/calculators/...">
+ *     内容...
+ *   </BaseLayout>
+ */
+import "../styles/global.css";
+import Seo from "../components/ui/Seo.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+
+export interface Props {
+  title: string;
+  description: string;
+  /** 当前页面路径，用于 canonical + JSON-LD */
+  path: string;
+  /** JSON-LD 结构化数据对象（计算器页用） */
+  jsonLd?: Record<string, any>;
+  /** 容器宽度，默认 max-w-4xl（计算器页），首页可用 max-w-6xl */
+  containerClass?: string;
+  /** 是否在内容区插入顶部广告位（首页/法律页通常关闭） */
+  showTopAd?: boolean;
+}
+
+const {
+  title,
+  description,
+  path,
+  jsonLd,
+  containerClass = "mx-auto max-w-4xl px-4 py-8",
+  showTopAd = false,
+} = Astro.props;
+
+// AdSense publisher ID（过审后才填）
+const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- SEO -->
+    <Seo title={title} description={description} path={path} jsonLd={jsonLd} />
+
+    <!-- Inter 字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Google AdSense（过审后取消注释并填入 ca-pub-xxx） -->
+    {adsenseClient && (
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+        crossorigin="anonymous"
+      />
+    )}
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <Header />
+
+    <main class={`flex-1 ${containerClass}`}>
+      {showTopAd && (
+        <div class="mb-8" aria-hidden="true" data-ad-placeholder="top"></div>
+      )}
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

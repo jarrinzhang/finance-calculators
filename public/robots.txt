@@ -1,0 +1,8 @@
+# https://www.robotstxt.org/robotstxt.html
+# 允许所有爬虫抓取所有页面
+User-agent: *
+Allow: /
+
+# Sitemap 位置（部署后请确保可访问）
+# 注意：构建时由 @astrojs/sitemap 自动生成 sitemap-index.xml
+Sitemap: https://finance-calculators.pages.dev/sitemap-index.xml

@@ -1,0 +1,81 @@
+---
+/**
+ * Retirement Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import RetirementCalculator from "../../components/calculators/RetirementCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "retirement-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <RetirementCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How the retirement calculator works</h2>
+    <p>
+      Enter your current age, the age you plan to retire, your current savings, and how much you
+      contribute monthly. The calculator projects how much your savings could grow to by
+      retirement &mdash; your <em>nest egg</em> &mdash; and estimates the monthly income you
+      could safely withdraw based on the withdrawal rate you choose.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The 4% rule explained</h3>
+    <p>
+      The 4% rule is a popular retirement guideline, based on the famous <em>Trinity Study</em>.
+      It suggests that withdrawing 4% of your portfolio in your first year of retirement &mdash;
+      and adjusting that amount for inflation each year &mdash; gives your money a high
+      probability of lasting 30 years. A lower withdrawal rate (3%) is more conservative; a
+      higher rate (5%+) is riskier.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">How much should you save?</h3>
+    <p>
+      A common rule of thumb from Fidelity suggests saving:
+    </p>
+    <ul>
+      <li><strong>1× your salary</strong> by age 30</li>
+      <li><strong>3× your salary</strong> by age 40</li>
+      <li><strong>6× your salary</strong> by age 50</li>
+      <li><strong>8× your salary</strong> by age 60</li>
+      <li><strong>10× your salary</strong> by age 67 (full retirement age for many)</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Assumptions and limitations</h3>
+    <p>
+      This calculator assumes a constant annual return rate. In reality, investment returns vary
+      year to year. It also does not account for inflation, taxes, Social Security benefits,
+      pensions, or changes in contribution amounts over time. Use the results as a rough planning
+      guide, and consider consulting a certified financial planner (CFP) for a personalized plan.
+    </p>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

@@ -1,0 +1,118 @@
+---
+/**
+ * Mortgage Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import MortgageCalculator from "../../components/calculators/MortgageCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "mortgage-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+// JSON-LD：WebApplication 结构化数据，提升搜索富结果曝光
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <!-- Breadcrumb -->
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <!-- H1 + 介绍 -->
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <!-- 计算器岛屿 -->
+  <MortgageCalculator client:load />
+
+  <!-- SEO 内容：使用说明 + FAQ -->
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How to use this mortgage calculator</h2>
+    <p>
+      Enter your home price, down payment, annual interest rate, and loan term. The calculator
+      instantly shows your monthly mortgage payment, total interest paid over the life of the
+      loan, and a full amortization schedule breaking down how each payment splits between
+      principal and interest.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The mortgage payment formula</h3>
+    <p>
+      Your monthly payment is calculated using the standard amortization formula:
+    </p>
+    <p class="rounded-lg bg-gray-50 px-4 py-3 font-mono text-sm">
+      M = P × [r(1+r)<sup>n</sup>] / [(1+r)<sup>n</sup> − 1]
+    </p>
+    <p class="text-sm">
+      Where <strong>M</strong> is the monthly payment, <strong>P</strong> is the loan principal
+      (home price minus down payment), <strong>r</strong> is the monthly interest rate, and
+      <strong>n</strong> is the total number of monthly payments.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">What costs are included?</h3>
+    <p>
+      This calculator covers your <strong>principal and interest (P&amp;I)</strong> &mdash; the
+      core of your monthly mortgage payment. Your actual payment may be higher because it
+      typically also includes property taxes, homeowners insurance, and (if your down payment is
+      below 20%) private mortgage insurance (PMI). These additional costs are usually held in an
+      escrow account by your lender.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Tips to lower your payment</h3>
+    <ul>
+      <li><strong>Increase your down payment</strong> &mdash; every extra dollar reduces the principal you borrow.</li>
+      <li><strong>Shop around for rates</strong> &mdash; even a 0.5% difference on a $300k loan saves over $100/month.</li>
+      <li><strong>Choose a longer term</strong> &mdash; a 30-year mortgage has lower payments than a 15-year, but you'll pay more interest overall.</li>
+      <li><strong>Improve your credit score</strong> &mdash; borrowers with scores above 760 typically qualify for the best rates.</li>
+    </ul>
+  </section>
+
+  <!-- FAQ 结构化数据 -->
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How much is a monthly payment on a $400,000 mortgage?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "For a $400,000 mortgage at 6.5% interest over 30 years, the monthly principal and interest payment is approximately $2,528. Your actual payment will be higher after adding property taxes and insurance.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "How much down payment do I need for a mortgage?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "A 20% down payment lets you avoid private mortgage insurance (PMI), but many loans allow much less: conventional loans can require as little as 3%, FHA loans 3.5%, and VA and USDA loans can require 0% down.",
+          },
+        },
+      ],
+    })}
+  />
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

@@ -1,0 +1,100 @@
+---
+/**
+ * Footer - 全站底部
+ */
+const year = new Date().getFullYear();
+
+const productLinks = [
+  { label: "Mortgage Calculator", href: "/calculators/mortgage-calculator" },
+  { label: "Loan Calculator", href: "/calculators/loan-calculator" },
+  { label: "Compound Interest Calculator", href: "/calculators/compound-interest-calculator" },
+  { label: "Retirement Calculator", href: "/calculators/retirement-calculator" },
+  { label: "Auto Loan Calculator", href: "/calculators/auto-loan-calculator" },
+];
+
+const companyLinks = [
+  { label: "About Us", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
+const legalLinks = [
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Service", href: "/terms-of-service" },
+];
+---
+
+<footer class="mt-16 border-t border-gray-200 bg-gray-50">
+  <div class="mx-auto max-w-6xl px-4 py-12">
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
+      <!-- Brand -->
+      <div class="md:col-span-1">
+        <a href="/" class="flex items-center gap-2 font-bold text-gray-900">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-800 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-5 w-5">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </span>
+          <span>FinCalc Hub</span>
+        </a>
+        <p class="mt-3 text-sm text-gray-600">
+          Free, fast, and accurate financial calculators to help you make smarter money decisions.
+        </p>
+      </div>
+
+      <!-- Calculators -->
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900">Calculators</h3>
+        <ul class="mt-4 space-y-2">
+          {productLinks.map((item) => (
+            <li>
+              <a href={item.href} class="text-sm text-gray-600 hover:text-brand-800">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900">Company</h3>
+        <ul class="mt-4 space-y-2">
+          {companyLinks.map((item) => (
+            <li>
+              <a href={item.href} class="text-sm text-gray-600 hover:text-brand-800">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900">Legal</h3>
+        <ul class="mt-4 space-y-2">
+          {legalLinks.map((item) => (
+            <li>
+              <a href={item.href} class="text-sm text-gray-600 hover:text-brand-800">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 border-t border-gray-200 pt-6">
+      <p class="text-xs leading-relaxed text-gray-500">
+        <strong>Disclaimer:</strong> FinCalc Hub provides tools for informational and educational
+        purposes only. We do not provide financial advice. Always consult a qualified financial
+        advisor before making financial decisions. Calculations are estimates and may not reflect
+        actual loan or investment terms.
+      </p>
+      <p class="mt-4 text-sm text-gray-500">
+        &copy; {year} FinCalc Hub. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>

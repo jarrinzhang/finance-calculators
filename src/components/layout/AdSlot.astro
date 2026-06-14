@@ -1,0 +1,51 @@
+---
+/**
+ * AdSlot - Google AdSense 广告位占位组件
+ *
+ * 使用方式：
+ *   <AdSlot slot="1234567890" format="auto" />
+ *
+ * 说明：
+ * - 现阶段（AdSense 未过审）不会渲染广告，只渲染占位 div
+ * - 过审后在 BaseLayout 把 PUBLIC_ADSENSE_CLIENT 填入你的 ca-pub-xxx ID
+ * - 每个广告位在 AdSense 后台创建后把 data-ad-slot 填上
+ */
+export interface Props {
+  /** AdSense 广告单元 ID（数字），过审后再填 */
+  slot?: string;
+  /** 广告格式，默认 auto */
+  format?: "auto" | "horizontal" | "vertical" | "rectangle";
+  /** 是否响应式 */
+  responsive?: boolean;
+  /** 样式 class（用于控制外层容器留白） */
+  class?: string;
+}
+
+const {
+  slot,
+  format = "auto",
+  responsive = true,
+  class: className = "my-8",
+} = Astro.props;
+
+// AdSense client ID（从环境变量读取，过审后才配置）
+const client = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
+const isReady = client && slot;
+---
+
+{isReady ? (
+  <div class={className}>
+    <ins
+      class="adsbygoogle"
+      style="display:block"
+      data-ad-client={client}
+      data-ad-slot={slot}
+      data-ad-format={format}
+      data-full-width-responsive={responsive ? "true" : "false"}
+    />
+    <script is:inline set:html={`(adsbygoogle = window.adsbygoogle || []).push({});`} />
+  </div>
+) : (
+  <!-- AdSense 未配置时的占位（不可见，留出广告位语义） -->
+  <div class={className} aria-hidden="true" data-ad-placeholder={slot ?? "unassigned"}></div>
+)}

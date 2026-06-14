@@ -1,0 +1,23 @@
+---
+/**
+ * RelatedCalculators - 在每个计算器页底部展示其它计算器卡片
+ * 用于内链建设（SEO）+ 用户跳转
+ */
+import CalculatorCard from "../ui/CalculatorCard.astro";
+import { getRelatedCalculators } from "../../data/calculators";
+
+export interface Props {
+  /** 当前页面 slug，用于排除自己 */
+  currentSlug: string;
+}
+
+const { currentSlug } = Astro.props;
+const related = getRelatedCalculators(currentSlug);
+---
+
+<section class="mt-16">
+  <h2 class="text-xl font-bold text-gray-900">Related Calculators</h2>
+  <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {related.map((calc) => <CalculatorCard calculator={calc} />)}
+  </div>
+</section>

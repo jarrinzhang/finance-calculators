@@ -1,0 +1,108 @@
+---
+/**
+ * Privacy Policy 落地页（AdSense 审核必需）
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageContent from "../components/ui/PageContent.astro";
+
+const title = "Privacy Policy";
+const description =
+  "How FinCalc Hub handles your data. All calculations run locally in your browser. We do not collect personal financial data.";
+const lastUpdated = "June 14, 2026";
+---
+
+<BaseLayout title={title} description={description} path="/privacy-policy">
+  <PageContent title={title} lastUpdated={lastUpdated}>
+    <p>
+      At FinCalc Hub ("we", "us", or "our"), accessible from this website, your privacy is one of
+      our top priorities. This Privacy Policy document explains what information we collect and
+      how we use it.
+    </p>
+
+    <h2>Calculations Are Local</h2>
+    <p>
+      <strong>Important:</strong> All financial calculations on this website happen entirely in
+      your web browser. The numbers you enter into our calculators (loan amounts, interest rates,
+      income, etc.) are <strong>never sent to our servers</strong> and are not stored by us. When
+      you close or refresh the page, that data is gone.
+    </p>
+
+    <h2>Log Files</h2>
+    <p>
+      Like most websites, we use log files. These may include internet protocol (IP) addresses,
+      browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages,
+      and the number of clicks. This information is used to analyze trends, administer the site,
+      track user movement around the site, and gather broad demographic information. IP addresses
+      and other such information are not linked to any information that is personally
+      identifiable.
+    </p>
+
+    <h2>Cookies</h2>
+    <p>
+      We use cookies to store information about visitors' preferences, record user-specific
+      information on which pages the user accesses, and customize our web page content based on
+      visitors' browser types.
+    </p>
+
+    <h2>Google AdSense &amp; Advertising</h2>
+    <p>
+      We may use third-party advertising companies to serve ads when you visit our website. These
+      companies may use information (not including your name, address, email address, or telephone
+      number) about your visits to this and other websites in order to provide advertisements
+      about goods and services of interest to you.
+    </p>
+    <p>
+      Google, as a third-party vendor, uses cookies to serve ads on this site. Google's use of
+      advertising cookies enables it and its partners to serve ads to our users based on their
+      visit to our site and/or other sites on the Internet.
+    </p>
+    <ul>
+      <li>
+        <strong>Google AdSense:</strong> Uses the <code>_gads</code> cookie to serve ads based on
+        prior visits. Learn more at
+        <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Google's Advertising Cookies page</a>.
+      </li>
+      <li>
+        <strong>Personalized ads:</strong> Users may opt out of personalized advertising by
+        visiting
+        <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google Ads Settings</a>.
+      </li>
+      <li>
+        For more about how Google uses data when you use partner sites, see the
+        <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">Google Privacy &amp; Terms page</a>.
+      </li>
+    </ul>
+
+    <h2>Third-Party Privacy Policies</h2>
+    <p>
+      Our Privacy Policy does not apply to other advertisers or websites. We advise you to
+      consult the respective Privacy Policies of these third-party ad servers for more detailed
+      information on their practices as well as for instructions about how to opt out of certain
+      practices. You may consult the following resources:
+    </p>
+    <ul>
+      <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a></li>
+      <li><a href="https://support.google.com/ads/answer/2662856" target="_blank" rel="noopener noreferrer">Google Ads Help: About ads</a></li>
+    </ul>
+
+    <h2>Children's Information</h2>
+    <p>
+      Another part of our priority is adding protection for children while using the internet. We
+      encourage parents and guardians to observe, participate in, and/or monitor and guide their
+      online activity. FinCalc Hub does not knowingly collect any Personal Identifiable
+      Information from children under the age of 13. If you think that your child provided this
+      kind of information on our website, we strongly encourage you to contact us immediately and
+      we will do our best efforts to promptly remove such information from our records.
+    </p>
+
+    <h2>Your Consent</h2>
+    <p>
+      By using our website, you hereby consent to our Privacy Policy and agree to its terms.
+    </p>
+
+    <h2>Contact Us</h2>
+    <p>
+      If you have any questions about this Privacy Policy, please <a href="/contact">contact us</a>.
+    </p>
+  </PageContent>
+</BaseLayout>

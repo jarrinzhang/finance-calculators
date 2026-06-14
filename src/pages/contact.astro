@@ -1,0 +1,56 @@
+---
+/**
+ * Contact 落地页
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageContent from "../components/ui/PageContent.astro";
+
+const title = "Contact Us";
+const description =
+  "Get in touch with FinCalc Hub. Send us feedback, report an issue, or suggest a new calculator.";
+---
+
+<BaseLayout title={title} description={description} path="/contact">
+  <PageContent title={title} subtitle="We'd love to hear from you.">
+    <p>
+      Have feedback, found a bug, or want to suggest a new calculator? You're in the right place.
+    </p>
+
+    <h2>Get in touch</h2>
+    <div class="not-prose rounded-xl border border-gray-200 bg-gray-50 p-6">
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm font-medium text-gray-500">Email</p>
+          <p class="mt-1 text-gray-900">hello&#64;fincalchub.example</p>
+          <p class="mt-1 text-xs text-gray-500">
+            (Replace with your real email before launch &mdash; see README)
+          </p>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-500">Response time</p>
+          <p class="mt-1 text-gray-900">Usually within 2&ndash;3 business days</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="mt-8">Common questions</h2>
+    <p>
+      <strong>Are your calculators free?</strong> Yes, every calculator on this site is 100% free
+      to use, no sign-up required.
+    </p>
+    <p>
+      <strong>Do you store my financial information?</strong> No. All calculations run entirely
+      in your browser. The numbers you enter never leave your device. Read more in our
+      <a href="/privacy-policy">Privacy Policy</a>.
+    </p>
+    <p>
+      <strong>Can I suggest a new calculator?</strong> Absolutely. Send us an email describing
+      what you'd like to see, and we'll consider it for our next update.
+    </p>
+    <p>
+      <strong>I found a calculation error.</strong> Please tell us immediately &mdash; include the
+      calculator name, your inputs, and what you expected the result to be. We take accuracy
+      seriously.
+    </p>
+  </PageContent>
+</BaseLayout>

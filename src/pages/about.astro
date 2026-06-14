@@ -1,0 +1,65 @@
+---
+/**
+ * About Us 落地页
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageContent from "../components/ui/PageContent.astro";
+
+const title = "About FinCalc Hub";
+const description =
+  "FinCalc Hub provides free, accurate, and privacy-first financial calculators. Learn about our mission and the team behind the tools.";
+---
+
+<BaseLayout title="About Us" description={description} path="/about">
+  <PageContent title={title} subtitle="Free financial tools, built with you in mind.">
+    <p>
+      FinCalc Hub was founded with a simple mission: to give everyone free, fast, and
+      trustworthy tools to understand their money. Big financial decisions &mdash; buying a home,
+      taking out a loan, planning for retirement &mdash; shouldn't require expensive software or a
+      finance degree to navigate.
+    </p>
+
+    <h2>What we believe</h2>
+    <ul>
+      <li>
+        <strong>Privacy first.</strong> Your numbers belong to you. Every calculation on this
+        site runs entirely in your browser &mdash; nothing you type is ever sent to our servers.
+      </li>
+      <li>
+        <strong>Accuracy matters.</strong> We use the same amortization and compound interest
+        formulas trusted by banks and financial advisors.
+      </li>
+      <li>
+        <strong>Free forever.</strong> Our calculators are 100% free, no sign-up required.
+      </li>
+      <li>
+        <strong>Simple by design.</strong> No clutter, no confusing jargon. Just clear answers.
+      </li>
+    </ul>
+
+    <h2>Our calculators</h2>
+    <p>
+      We currently offer five core financial calculators covering the most common money
+      decisions:
+    </p>
+    <ul>
+      <li><a href="/calculators/mortgage-calculator">Mortgage Calculator</a> &mdash; monthly house payments + amortization</li>
+      <li><a href="/calculators/loan-calculator">Loan Calculator</a> &mdash; personal loans, debt consolidation, and more</li>
+      <li><a href="/calculators/compound-interest-calculator">Compound Interest Calculator</a> &mdash; see your savings grow</li>
+      <li><a href="/calculators/retirement-calculator">Retirement Calculator</a> &mdash; project your nest egg</li>
+      <li><a href="/calculators/auto-loan-calculator">Auto Loan Calculator</a> &mdash; the true cost of your next car</li>
+    </ul>
+    <p>
+      More calculators are on the way. <a href="/contact">Let us know</a> what you'd like to see
+      next.
+    </p>
+
+    <h2>Important disclaimer</h2>
+    <p>
+      We are not financial advisors, and nothing on this site should be taken as personalized
+      financial advice. Our tools provide estimates to help you understand the math behind common
+      financial decisions. For advice tailored to your situation, please consult a certified
+      financial planner (CFP) or other qualified professional.
+    </p>
+  </PageContent>
+</BaseLayout>

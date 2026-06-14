@@ -1,0 +1,51 @@
+---
+/**
+ * 统一 SEO 组件 - 注入 title / description / canonical / OG / Twitter Card / JSON-LD
+ * 使用方式：
+ *   <Seo title="..." description="..." path="/calculators/mortgage-calculator" />
+ *   <Seo title="..." description="..." path="..." jsonLd={...} />
+ */
+export interface Props {
+  title: string;
+  description: string;
+  /** 页面路径（以 / 开头，不含域名），用于生成 canonical */
+  path: string;
+  /** 可选 OG 图片绝对路径，留空使用默认 */
+  ogImage?: string;
+  /** 可选 JSON-LD 结构化数据对象 */
+  jsonLd?: Record<string, any>;
+}
+
+const { title, description, path, ogImage, jsonLd } = Astro.props;
+
+const siteName = "FinCalc Hub";
+const canonical = new URL(path, Astro.site).href;
+const resolvedTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+const ogImageFinal = ogImage
+  ? new URL(ogImage, Astro.site).href
+  : new URL("/og-default.png", Astro.site).href;
+---
+
+<!-- Primary Meta -->
+<title>{resolvedTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={resolvedTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageFinal} />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={resolvedTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageFinal} />
+
+<!-- JSON-LD 结构化数据 -->
+{jsonLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+)}

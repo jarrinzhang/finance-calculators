@@ -1,0 +1,76 @@
+---
+/**
+ * Auto Loan Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AutoLoanCalculator from "../../components/calculators/AutoLoanCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "auto-loan-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <AutoLoanCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How to use the auto loan calculator</h2>
+    <p>
+      Enter the vehicle price, your down payment, the value of any trade-in vehicle, the loan's
+      APR, your local sales tax rate, and the loan term in years. The calculator handles the
+      math: it adds sales tax to the price, subtracts your down payment and trade-in, and shows
+      your monthly payment, total interest, and the true total cost of the vehicle.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Average auto loan rates (2026)</h3>
+    <ul>
+      <li><strong>New car loan</strong>: 6.5%&ndash;8.5% APR</li>
+      <li><strong>Used car loan</strong>: 9%&ndash;13% APR</li>
+      <li><strong>Excellent credit (750+)</strong>: 5%&ndash;6.5% APR</li>
+      <li><strong>Poor credit (below 600)</strong>: 15%&ndash;25%+ APR</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">How to save on your car loan</h3>
+    <ul>
+      <li><strong>Make a 20% down payment</strong> &mdash; this prevents being "underwater" on the loan.</li>
+      <li><strong>Keep the term at 60 months or shorter</strong> &mdash; longer terms mean lower payments but much higher total interest.</li>
+      <li><strong>Get pre-approved</strong> before visiting the dealer &mdash; you'll know your rate and can negotiate as a cash buyer.</li>
+      <li><strong>Refinance later</strong> if rates drop or your credit improves.</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Don't forget the true cost of ownership</h3>
+    <p>
+      The monthly payment is only part of car ownership. Budget for insurance (averaging
+      $150&ndash;$200/month), fuel, maintenance, registration, and depreciation. A new car loses
+      20%&ndash;30% of its value in the first year alone &mdash; buying a 2&ndash;3 year old
+      used vehicle lets someone else take that depreciation hit.
+    </p>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

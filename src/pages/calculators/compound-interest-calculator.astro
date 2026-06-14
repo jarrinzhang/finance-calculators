@@ -1,0 +1,88 @@
+---
+/**
+ * Compound Interest Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CompoundInterestCalculator from "../../components/calculators/CompoundInterestCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "compound-interest-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <CompoundInterestCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">What is compound interest?</h2>
+    <p>
+      Compound interest is interest calculated on both the initial principal and all the
+      accumulated interest from previous periods. Albert Einstein supposedly called it
+      "the eighth wonder of the world" &mdash; and for good reason. Over time, compounding
+      can turn even modest savings into substantial wealth.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The compound interest formula</h3>
+    <p class="rounded-lg bg-gray-50 px-4 py-3 font-mono text-sm">
+      A = P × (1 + r/n)<sup>n×t</sup>
+    </p>
+    <p class="text-sm">
+      Where <strong>A</strong> is the final amount, <strong>P</strong> the principal,
+      <strong>r</strong> the annual interest rate (as a decimal), <strong>n</strong> the number
+      of times interest compounds per year, and <strong>t</strong> the number of years.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Why frequency matters</h3>
+    <p>
+      The more often interest compounds, the faster your money grows. Monthly compounding
+      outperforms annual compounding because each month's interest starts earning its own
+      interest sooner. Use the frequency selector to compare the difference.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Realistic long-term returns</h3>
+    <ul>
+      <li><strong>High-yield savings / CDs</strong>: 4%&ndash;5%</li>
+      <li><strong>Conservative portfolio (bonds)</strong>: 4%&ndash;6%</li>
+      <li><strong>Balanced portfolio (stocks + bonds)</strong>: 6%&ndash;8%</li>
+      <li><strong>S&amp;P 500 historical average</strong>: ~10% (before inflation)</li>
+    </ul>
+    <p class="text-sm">
+      Remember: past performance does not guarantee future results, and high returns come with
+      higher risk. Always consider inflation, which historically averages 2%&ndash;3% per year.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The Rule of 72</h3>
+    <p>
+      A quick mental shortcut: divide 72 by your annual return rate to estimate how many years
+      it takes for your money to double. At 8%, your money doubles every 9 years. At 12%, every
+      6 years. This calculator does the precise math for you.
+    </p>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>
