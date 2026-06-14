@@ -212,6 +212,267 @@ export function calculateRetirement(
 }
 
 /* ============================================================
+   信用卡还款
+   ============================================================ */
+
+/**
+ * 按固定月供算还清时间（信用卡最低还款用不到，这里用于"加速还款"场景）
+ *
+ * 每月余额 = 上月余额 * (1+r) - 月供
+ * 迭代到余额 ≤ 0
+ *
+ * @param balance 当前余额
+ * @param annualRatePercent 年利率（信用卡通常 15-25%，按日息计这里简化为月复利）
+ * @param monthlyPayment 固定月供（必须 > 月利息，否则永远还不清）
+ */
+export function calculateCreditCardPayoff(
+  balance: number,
+  annualRatePercent: number,
+  monthlyPayment: number
+): {
+  months: number;
+  totalPaid: number;
+  totalInterest: number;
+  /** 是否能还清（月供 < 月利息时为 false） */
+  canPayOff: boolean;
+} {
+  const r = percentToDecimal(annualRatePercent) / 12;
+  const minMonthlyInterest = balance * r;
+
+  // 月供 <= 月利息：永远还不清
+  if (monthlyPayment <= minMonthlyInterest) {
+    return { months: Infinity, totalPaid: Infinity, totalInterest: Infinity, canPayOff: false };
+  }
+
+  let currentBalance = balance;
+  let totalPaid = 0;
+  let months = 0;
+
+  // 防止无限循环（最多 1200 个月 = 100 年）
+  while (currentBalance > 0.005 && months < 1200) {
+    const interest = currentBalance * r;
+    // 最后一期：月供 = 余额 + 利息
+    const payment = Math.min(monthlyPayment, currentBalance + interest);
+    currentBalance -= payment - interest;
+    totalPaid += payment;
+    months++;
+  }
+
+  return {
+    months,
+    totalPaid,
+    totalInterest: totalPaid - balance,
+    canPayOff: true,
+  };
+}
+
+/**
+ * 按目标还清月数，算所需月供
+ *
+ * 解 M = B * r / (1 - (1+r)^-n)（即等额本息月供公式的反解）
+ */
+export function calculatePaymentForPayoff(
+  balance: number,
+  annualRatePercent: number,
+  months: number
+): number {
+  const r = percentToDecimal(annualRatePercent) / 12;
+  if (months <= 0) return 0;
+  if (r === 0) return balance / months;
+  return (balance * r) / (1 - Math.pow(1 + r, -months));
+}
+
+/* ============================================================
+   储蓄目标
+   ============================================================ */
+
+/**
+ * 给定目标金额 + 期限，算每月需要存多少
+ *
+ * 反解普通年金公式：PMT = (FV * r) / ((1+r)^n - 1)
+ *
+ * @param targetAmount 目标金额
+ * @param currentSavings 当前已储蓄
+ * @param annualRatePercent 年化收益率（%）
+ * @param months 目标月数
+ */
+export function calculateSavingsGoal(
+  targetAmount: number,
+  currentSavings: number,
+  annualRatePercent: number,
+  months: number
+): {
+  monthlyContribution: number;
+  /** 当前储蓄到期时的终值 */
+  currentSavingsFv: number;
+  /** 总投入（含当前储蓄） */
+  totalContributions: number;
+  totalInterest: number;
+} {
+  const r = percentToDecimal(annualRatePercent) / 12;
+  // 当前储蓄到期时的终值
+  const currentSavingsFv = currentSavings * Math.pow(1 + r, months);
+  // 还需要靠月存达到的金额
+  const remainingTarget = Math.max(0, targetAmount - currentSavingsFv);
+
+  let monthlyContribution: number;
+  if (months <= 0) {
+    monthlyContribution = remainingTarget;
+  } else if (r === 0) {
+    monthlyContribution = remainingTarget / months;
+  } else {
+    monthlyContribution = (remainingTarget * r) / (Math.pow(1 + r, months) - 1);
+  }
+
+  const totalContributions = currentSavings + monthlyContribution * months;
+  const totalInterest = targetAmount - totalContributions;
+
+  return {
+    monthlyContribution,
+    currentSavingsFv,
+    totalContributions,
+    totalInterest,
+  };
+}
+
+/* ============================================================
+   投资回报率 ROI
+   ============================================================ */
+
+/**
+ * 简单 ROI 百分比
+ *
+ * ROI = (收益 - 成本) / 成本 * 100
+ *
+ * @param initialInvestment 初始投入
+ * @param finalValue 期末价值
+ * @param years 持有年限（用于计算年化）
+ */
+export function calculateROI(
+  initialInvestment: number,
+  finalValue: number,
+  years: number
+): {
+  totalReturn: number; // 绝对收益（金额）
+  roiPercent: number; // 总 ROI %
+  /** 年化 ROI（CAGR） */
+  annualizedRoiPercent: number;
+} {
+  if (initialInvestment <= 0) {
+    return { totalReturn: 0, roiPercent: 0, annualizedRoiPercent: 0 };
+  }
+  const totalReturn = finalValue - initialInvestment;
+  const roiPercent = (totalReturn / initialInvestment) * 100;
+  // CAGR = (FV/PV)^(1/n) - 1
+  const annualizedRoiPercent =
+    years > 0 ? (Math.pow(finalValue / initialInvestment, 1 / years) - 1) * 100 : 0;
+
+  return { totalReturn, roiPercent, annualizedRoiPercent };
+}
+
+/* ============================================================
+   APR 真实年化利率（含费用）
+   ============================================================ */
+
+/**
+ * 计算含费用后的真实 APR
+ *
+ * 通过牛顿迭代法求利率，使按月供还清 (principal + fees) 的现值等于 (principal - fees)
+ *
+ * @param principal 贷款本金
+ * @param fees 贷款费用（手续费、点数等，从本金中扣除）
+ * @param nominalRatePercent 名义年利率（%）
+ * @param years 贷款年限
+ */
+export function calculateAPR(
+  principal: number,
+  fees: number,
+  nominalRatePercent: number,
+  years: number
+): {
+  aprPercent: number;
+  monthlyPayment: number;
+  /** 实际到手金额 */
+  netAmount: number;
+} {
+  const n = years * 12;
+  const monthlyPayment = calculateMonthlyPayment(principal, nominalRatePercent, years);
+  // 实际到手 = 本金 - 费用
+  const netAmount = principal - fees;
+
+  if (netAmount <= 0 || n <= 0 || monthlyPayment <= 0) {
+    return { aprPercent: nominalRatePercent, monthlyPayment, netAmount };
+  }
+
+  // 牛顿迭代求解月利率 r，使得：
+  // netAmount = monthlyPayment * (1 - (1+r)^-n) / r
+  // 用二分法更稳健
+  let low = 0;
+  let high = 0.5; // 月利率上限 50%（年化 600%，足够）
+  let mid = 0;
+  for (let i = 0; i < 100; i++) {
+    mid = (low + high) / 2;
+    const factor = Math.pow(1 + mid, n);
+    const pv = mid === 0 ? monthlyPayment * n : monthlyPayment * (1 - 1 / factor) / mid;
+    if (pv > netAmount) {
+      low = mid;
+    } else {
+      high = mid;
+    }
+  }
+  const aprPercent = mid * 12 * 100;
+  return { aprPercent, monthlyPayment, netAmount };
+}
+
+/* ============================================================
+   贷款对比
+   ============================================================ */
+
+export interface LoanOption {
+  /** 选项名 */
+  label: string;
+  /** 贷款金额 */
+  principal: number;
+  /** 年利率 % */
+  annualRatePercent: number;
+  /** 年限 */
+  years: number;
+  /** 一次性费用（如手续费） */
+  fees?: number;
+}
+
+export interface LoanComparisonResult {
+  option: LoanOption;
+  monthlyPayment: number;
+  totalPaid: number;
+  totalInterest: number;
+  /** 含费用后真实 APR */
+  aprPercent: number;
+}
+
+/**
+ * 对比多个贷款方案，返回每个的月供、总利息、APR
+ */
+export function compareLoans(options: LoanOption[]): LoanComparisonResult[] {
+  return options.map((option) => {
+    const monthlyPayment = calculateMonthlyPayment(
+      option.principal,
+      option.annualRatePercent,
+      option.years
+    );
+    const totalPaid = monthlyPayment * option.years * 12;
+    const totalInterest = Math.max(0, totalPaid - option.principal);
+    const { aprPercent } = calculateAPR(
+      option.principal,
+      option.fees ?? 0,
+      option.annualRatePercent,
+      option.years
+    );
+    return { option, monthlyPayment, totalPaid, totalInterest, aprPercent };
+  });
+}
+
+/* ============================================================
    格式化工具
    ============================================================ */
 

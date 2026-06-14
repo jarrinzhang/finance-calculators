@@ -17,6 +17,12 @@ import {
   calculateCompoundInterest,
   calculateRecurringInvestment,
   calculateRetirement,
+  calculateCreditCardPayoff,
+  calculatePaymentForPayoff,
+  calculateSavingsGoal,
+  calculateROI,
+  calculateAPR,
+  compareLoans,
   formatCurrency,
   parseNumberInput,
 } from "./finance.ts";
@@ -218,8 +224,109 @@ assert(
 );
 
 /* -----------------------------------------------------------
- * 6. 格式化与解析工具
+ * 6. 信用卡还款
  * ----------------------------------------------------------- */
+
+console.log("\n【6】Credit Card Payoff\n");
+
+// $5000 余额 @ 20%，月供 $200
+// Python Decimal 迭代法验证 → months=33, totalPaid=6522.10, interest=1522.10
+const cc1 = calculateCreditCardPayoff(5000, 20, 200);
+assert("CC Payoff months ($200)", cc1.months, 33, 0);
+assert("CC Payoff totalPaid", cc1.totalPaid, 6522.10, 1);
+assert("CC Payoff interest", cc1.totalInterest, 1522.10, 1);
+assert("CC Payoff canPayOff", cc1.canPayOff ? 1 : 0, 1, 0);
+
+// 月供 $300（加速还款）
+const cc2 = calculateCreditCardPayoff(5000, 20, 300);
+assert("CC Payoff months ($300)", cc2.months, 20, 0);
+assert("CC Payoff interest ($300)", cc2.totalInterest, 906.81, 1);
+
+// 月供不足（永远还不清）
+const cc3 = calculateCreditCardPayoff(5000, 20, 50);
+assert("CC Payoff 不足时 canPayOff=false", cc3.canPayOff ? 1 : 0, 0, 0);
+
+// PaymentForPayoff
+// $5000 @ 20% 12 个月 → $463.17
+assert(
+  "PaymentForPayoff 12mo",
+  calculatePaymentForPayoff(5000, 20, 12),
+  463.17,
+  0.05
+);
+// 24 个月 → $254.48
+assert(
+  "PaymentForPayoff 24mo",
+  calculatePaymentForPayoff(5000, 20, 24),
+  254.48,
+  0.05
+);
+
+/* -----------------------------------------------------------
+ * 7. 储蓄目标
+ * ----------------------------------------------------------- */
+
+console.log("\n【7】Savings Goal\n");
+
+// $50k 目标, $5k 起点, @5%, 36 个月
+// Python Decimal 验证 → monthly=$1140.36, currentFv=$5807.36
+const sg = calculateSavingsGoal(50000, 5000, 5, 36);
+assert("SavingsGoal 月存", sg.monthlyContribution, 1140.36, 1);
+assert("SavingsGoal 当前储蓄终值", sg.currentSavingsFv, 5807.36, 1);
+
+/* -----------------------------------------------------------
+ * 8. ROI
+ * ----------------------------------------------------------- */
+
+console.log("\n【8】ROI\n");
+
+// $10k → $15k, 3 年
+// Python Decimal 验证 → totalReturn=5000, roiPercent=50, annualized=14.4714
+const roi = calculateROI(10000, 15000, 3);
+assert("ROI 绝对收益", roi.totalReturn, 5000, 0.01);
+assert("ROI 百分比", roi.roiPercent, 50, 0.01);
+assert("ROI 年化", roi.annualizedRoiPercent, 14.4714, 0.01);
+
+// 边界：本金 0
+const roiZero = calculateROI(0, 1000, 1);
+assert("ROI 本金0 返回0", roiZero.roiPercent, 0, 0.01);
+
+/* -----------------------------------------------------------
+ * 9. APR
+ * ----------------------------------------------------------- */
+
+console.log("\n【9】APR\n");
+
+// $10k 本金, $500 费用, 6% 名义利率, 5 年
+// Python Decimal 验证 → aprPercent=8.1543, monthlyPayment=193.3280, netAmount=9500
+const apr = calculateAPR(10000, 500, 6, 5);
+assert("APR 含费后真实年化", apr.aprPercent, 8.1543, 0.05);
+assert("APR 月供", apr.monthlyPayment, 193.33, 0.05);
+assert("APR 实到金额", apr.netAmount, 9500, 0.01);
+
+/* -----------------------------------------------------------
+ * 10. 贷款对比
+ * ----------------------------------------------------------- */
+
+console.log("\n【10】Loan Comparison\n");
+
+const options = [
+  { label: "3-year", principal: 10000, annualRatePercent: 5, years: 3 },
+  { label: "5-year", principal: 10000, annualRatePercent: 7, years: 5 },
+  { label: "7-year", principal: 10000, annualRatePercent: 9, years: 7 },
+];
+const compared = compareLoans(options);
+assert("Loan Comparison 返回 3 个选项", compared.length, 3, 0);
+// 第一个：$10k@5%×3yr → 月供 ~$299.71, 总利息 ~$789.52
+// Python 验证：monthly=299.7089, totalInterest=789.52
+assert("Loan#1 月供", compared[0].monthlyPayment, 299.71, 0.1);
+assert("Loan#1 总利息", compared[0].totalInterest, 789.52, 1);
+
+/* -----------------------------------------------------------
+ * 11. 格式化与解析工具
+ * ----------------------------------------------------------- */
+
+console.log("\n【11】Formatting & Parsing\n");
 
 console.log("\n【6】Formatting & Parsing\n");
 

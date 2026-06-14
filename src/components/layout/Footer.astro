@@ -2,15 +2,12 @@
 /**
  * Footer - 全站底部
  */
+import { calculators } from "../../data/calculators";
+
 const year = new Date().getFullYear();
 
-const productLinks = [
-  { label: "Mortgage Calculator", href: "/calculators/mortgage-calculator" },
-  { label: "Loan Calculator", href: "/calculators/loan-calculator" },
-  { label: "Compound Interest Calculator", href: "/calculators/compound-interest-calculator" },
-  { label: "Retirement Calculator", href: "/calculators/retirement-calculator" },
-  { label: "Auto Loan Calculator", href: "/calculators/auto-loan-calculator" },
-];
+// 从 data 动态生成，新增计算器自动同步到 Footer
+const productLinks = calculators.map((c) => ({ label: c.name, href: c.path }));
 
 const companyLinks = [
   { label: "About Us", href: "/about" },

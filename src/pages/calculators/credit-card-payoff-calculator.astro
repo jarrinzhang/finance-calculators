@@ -1,0 +1,80 @@
+---
+/**
+ * Credit Card Payoff Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CreditCardPayoffCalculator from "../../components/calculators/CreditCardPayoffCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "credit-card-payoff-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <CreditCardPayoffCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How to use this credit card payoff calculator</h2>
+    <p>
+      Choose a mode at the top of the calculator. <strong>"I have a budget"</strong> lets you
+      enter a monthly payment and see when you'll be debt-free. <strong>"I have a goal"</strong>
+      lets you pick a target payoff date and finds the payment that gets you there. Either way,
+      you'll see your total interest cost and total amount paid.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The math behind it</h3>
+    <p>
+      Each month, interest accrues on your balance at your APR divided by 12. Your payment first
+      covers that interest, then reduces the principal. The cycle repeats until the balance hits
+      zero. The longer you take, the more interest you pay &mdash; which is why paying even $50
+      extra per month can shave years off your debt.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">How to pay off credit card debt faster</h3>
+    <ul>
+      <li><strong>Pay more than the minimum.</strong> Minimum payments are designed to keep you in debt for 10+ years.</li>
+      <li><strong>Use the avalanche method:</strong> put extra money toward your highest-APR card first to save the most interest.</li>
+      <li><strong>Consider a balance transfer</strong> to a 0% intro APR card (typically 12&ndash;21 months) to pause interest charges.</li>
+      <li><strong>Look into a debt consolidation loan</strong> at a lower rate than your cards.</li>
+      <li><strong>Stop adding new charges</strong> while you pay down existing debt.</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Typical credit card interest rates</h3>
+    <ul>
+      <li><strong>Average APR (2026):</strong> ~22%</li>
+      <li><strong>Rewards cards:</strong> typically 1&ndash;3% higher than no-frills cards</li>
+      <li><strong>Penalty APR:</strong> up to 29.99% triggered by late payments</li>
+    </ul>
+    <p class="text-sm">
+      At 22% APR, paying only the 2% minimum on a $5,000 balance means you'll pay over
+      $5,800 in interest and take 30+ years to pay it off. Use this calculator to escape that trap.
+    </p>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

@@ -80,6 +80,66 @@ export const calculators: CalculatorMeta[] = [
     emoji: "🚗",
     accent: "from-rose-500 to-rose-700",
   },
+  {
+    slug: "credit-card-payoff-calculator",
+    path: "/calculators/credit-card-payoff-calculator",
+    name: "Credit Card Payoff Calculator",
+    shortDesc:
+      "See how long it takes to clear credit card debt, or find the payment to be debt-free by your goal date.",
+    seoDescription:
+      "Free credit card payoff calculator. Find your debt-free date, total interest, and the exact monthly payment needed to pay off credit card debt fast.",
+    icon: `<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>`,
+    emoji: "💳",
+    accent: "from-pink-500 to-pink-700",
+  },
+  {
+    slug: "savings-goal-calculator",
+    path: "/calculators/savings-goal-calculator",
+    name: "Savings Goal Calculator",
+    shortDesc:
+      "Find out exactly how much to save each month to hit any financial goal on time.",
+    seoDescription:
+      "Free savings goal calculator. Calculate the monthly contribution needed to reach your savings target, with interest working in your favor.",
+    icon: `<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>`,
+    emoji: "🎯",
+    accent: "from-emerald-500 to-emerald-700",
+  },
+  {
+    slug: "roi-calculator",
+    path: "/calculators/roi-calculator",
+    name: "ROI Calculator",
+    shortDesc:
+      "Measure investment performance: total return and annualized rate (CAGR).",
+    seoDescription:
+      "Free ROI calculator. Calculate total return on investment and annualized rate (CAGR) for stocks, real estate, business, or any investment.",
+    icon: `<polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/>`,
+    emoji: "📊",
+    accent: "from-indigo-500 to-indigo-700",
+  },
+  {
+    slug: "apr-calculator",
+    path: "/calculators/apr-calculator",
+    name: "APR Calculator",
+    shortDesc:
+      "Reveal the true cost of a loan by converting interest plus fees into a single APR.",
+    seoDescription:
+      "Free APR calculator. Find the true annual percentage rate of any loan, including fees. Compare apples to apples across lenders.",
+    icon: `<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>`,
+    emoji: "🔍",
+    accent: "from-violet-500 to-violet-700",
+  },
+  {
+    slug: "loan-comparison-calculator",
+    path: "/calculators/loan-comparison-calculator",
+    name: "Loan Comparison Calculator",
+    shortDesc:
+      "Compare 3 loan offers side-by-side: monthly payment, total cost, and true APR.",
+    seoDescription:
+      "Free loan comparison calculator. Compare up to 3 loan offers by monthly payment, total interest, true APR, and total cost to find the cheapest option.",
+    icon: `<rect x="3" y="3" width="7" height="18"/><rect x="14" y="3" width="7" height="18"/>`,
+    emoji: "⚖️",
+    accent: "from-cyan-500 to-cyan-700",
+  },
 ];
 
 /** 按 slug 查找 */

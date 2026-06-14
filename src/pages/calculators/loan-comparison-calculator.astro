@@ -1,0 +1,85 @@
+---
+/**
+ * Loan Comparison Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LoanComparisonCalculator from "../../components/calculators/LoanComparisonCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "loan-comparison-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <LoanComparisonCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How to compare loans the smart way</h2>
+    <p>
+      When you apply for a loan, lenders rarely make it easy to compare offers. One advertises a
+      low rate but piles on fees. Another has zero fees but a higher rate. This calculator puts
+      three offers side by side &mdash; same loan amount, different terms &mdash; and reveals
+      which one truly costs you the least.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The two numbers that matter</h3>
+    <ul>
+      <li>
+        <strong>Total cost</strong> (monthly payment × number of months + fees): how much the
+        loan actually costs you over its full life. <em>Lower is better</em>.
+      </li>
+      <li>
+        <strong>True APR</strong>: a single percentage that captures interest + fees, making it
+        easy to compare loans of different sizes and terms.
+      </li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Short term vs. long term: the classic trade-off</h3>
+    <p>
+      A shorter loan term means higher monthly payments but much less interest overall. A longer
+      term lowers your monthly payment but can double or triple your total interest. Use this
+      calculator to find your sweet spot &mdash; the option you can comfortably afford that still
+      minimizes total cost.
+    </p>
+
+    <p class="text-sm">
+      <strong>Example:</strong> On a $10,000 loan, going from 5 years at 7% to 3 years at 5%
+      raises your monthly payment from ~$198 to ~$300, but saves you over $1,100 in total interest.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Beyond the numbers: what else to check</h3>
+    <ul>
+      <li><strong>Prepayment penalties:</strong> can you pay off early without fees?</li>
+      <li><strong>Late payment policies:</strong> grace periods and penalty APRs</li>
+      <li><strong>Fixed vs. variable rate:</strong> variable loans can spike if rates rise</li>
+      <li><strong>Lender reputation:</strong> read reviews, check the Better Business Bureau</li>
+    </ul>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

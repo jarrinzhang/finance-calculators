@@ -1,0 +1,85 @@
+---
+/**
+ * APR Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import APRCalculator from "../../components/calculators/APRCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "apr-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <APRCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">Interest rate vs. APR &mdash; what's the difference?</h2>
+    <p>
+      The <strong>interest rate</strong> is the cost of borrowing the money, expressed as a
+      percentage. The <strong>APR (Annual Percentage Rate)</strong> includes the interest rate
+      <em>plus</em> upfront fees like origination fees, points, and broker charges &mdash; spread
+      across the life of the loan. APR is the number to use when comparing loans, because it
+      reflects your true cost of borrowing.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">How this calculator works</h3>
+    <p>
+      Enter the loan amount, any upfront fees, the lender's stated interest rate, and the loan
+      term. The calculator determines the equivalent interest rate that, applied to the
+      <em>net amount you actually receive</em> (loan minus fees), produces the same monthly
+      payment. That equivalent rate is your true APR.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">A real-world example</h3>
+    <p>
+      A $10,000 personal loan advertised at "6% interest" with a $500 origination fee sounds
+      reasonable. But that $500 fee means you only receive $9,500 &mdash; and you're paying
+      interest on the full $10,000. The result? Your true APR is closer to <strong>8.15%</strong>,
+      not 6%. Always read the APR disclosure, not just the headline rate.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Common loan fees to watch</h3>
+    <ul>
+      <li><strong>Origination fee:</strong> 1%&ndash;8% of the loan (personal loans)</li>
+      <li><strong>Discount points:</strong> 1% each, paid upfront to lower your rate (mortgages)</li>
+      <li><strong>Broker fees:</strong> 1%&ndash;2% of loan amount</li>
+      <li><strong>Application / processing fees:</strong> flat fees, $50&ndash;$500</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">APR vs. APY</h3>
+    <p>
+      Don't confuse APR with APY (Annual Percentage Yield). APR is what you <em>pay</em> on a loan
+      and doesn't include compounding. APY is what you <em>earn</em> on savings and does include
+      compounding. A 12% APR loan with monthly compounding costs you the equivalent of ~12.68% APY
+      over a year.
+    </p>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

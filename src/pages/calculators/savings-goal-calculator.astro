@@ -1,0 +1,80 @@
+---
+/**
+ * Savings Goal Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SavingsGoalCalculator from "../../components/calculators/SavingsGoalCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "savings-goal-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <SavingsGoalCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How the savings goal calculator works</h2>
+    <p>
+      Enter your target amount, what you've saved so far, the annual return you expect to earn,
+      and how many months you have. The calculator tells you the exact monthly contribution
+      needed &mdash; and how much of your goal will be funded by investment growth versus your
+      own contributions.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Why earning a return matters</h3>
+    <p>
+      If you save $1,000/month for 36 months at 0% interest, you'll have $36,000. At 5% APY &mdash;
+      achievable in a high-yield savings account &mdash; you'd have about $38,968, with nearly
+      $3,000 of that coming from interest alone. The longer your timeline and higher your rate,
+      the bigger the boost.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Common savings goals</h3>
+    <ul>
+      <li><strong>Emergency fund:</strong> 3&ndash;6 months of expenses (a non-negotiable first step)</li>
+      <li><strong>Down payment on a home:</strong> typically 5%&ndash;20% of the home price</li>
+      <li><strong>Wedding:</strong> average cost ~$30,000 in the U.S.</li>
+      <li><strong>Vacation:</strong> set a budget and divide by the months you have</li>
+      <li><strong>Big purchase:</strong> car, education, home renovation</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Where to put your savings</h3>
+    <ul>
+      <li><strong>0&ndash;2 years:</strong> high-yield savings account or money market (~4&ndash;5% APY, FDIC-insured)</li>
+      <li><strong>3&ndash;5 years:</strong> short-term CDs or bond funds (slightly higher yield, still low risk)</li>
+      <li><strong>5+ years:</strong> diversified investment portfolio (higher expected return, more volatility)</li>
+    </ul>
+    <p class="text-sm">
+      Match your investment's risk to your timeline. Money you need in under 2 years should not
+      be in stocks &mdash; a market dip at the wrong moment could leave you short.
+    </p>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

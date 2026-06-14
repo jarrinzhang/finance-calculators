@@ -1,0 +1,86 @@
+---
+/**
+ * ROI Calculator 落地页
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ROICalculator from "../../components/calculators/ROICalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "roi-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <ROICalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">What is ROI?</h2>
+    <p>
+      Return on Investment (ROI) measures how much profit (or loss) you made relative to what you
+      put in. It's the most common way to evaluate whether an investment &mdash; in stocks, real
+      estate, a business, or even education &mdash; was worth it.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The ROI formula</h3>
+    <p class="rounded-lg bg-gray-50 px-4 py-3 font-mono text-sm">
+      ROI = (Final Value − Initial Cost) / Initial Cost × 100%
+    </p>
+    <p class="text-sm">
+      A $10,000 investment that grows to $15,000 has a total ROI of 50%. But "50% over 3 years"
+      tells you something very different than "50% over 10 years." That's where the
+      <strong>annualized return (CAGR)</strong> comes in.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">CAGR: the only fair comparison</h3>
+    <p>
+      Compound Annual Growth Rate (CAGR) shows what your average yearly return would have been if
+      growth had been steady. It lets you compare investments held for different lengths of time.
+      Use CAGR &mdash; not total ROI &mdash; when comparing a stock you held for 2 years against
+      a house you owned for 15.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Realistic return benchmarks</h3>
+    <ul>
+      <li><strong>S&amp;P 500 (long-term average):</strong> ~10% per year (before inflation)</li>
+      <li><strong>Real estate:</strong> ~4&ndash;8% per year (plus rental income)</li>
+      <li><strong>Bonds:</strong> ~4&ndash;6% per year</li>
+      <li><strong>High-yield savings:</strong> ~4&ndash;5% APY (as of 2026)</li>
+      <li><strong>Inflation (historical average):</strong> ~3% per year</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">What ROI doesn't capture</h3>
+    <ul>
+      <li><strong>Taxes:</strong> capital gains taxes reduce your actual return.</li>
+      <li><strong>Inflation:</strong> a 7% nominal return is only ~4% real return at 3% inflation.</li>
+      <li><strong>Risk and volatility:</strong> a smooth 8% is very different from an 8% average with wild swings.</li>
+      <li><strong>Time and effort:</strong> especially for business or real estate investments.</li>
+    </ul>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>
