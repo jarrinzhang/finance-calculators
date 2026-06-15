@@ -23,6 +23,11 @@ import {
   calculateROI,
   calculateAPR,
   compareLoans,
+  calculateSalary,
+  annualToHourly,
+  calculateInflation,
+  calculateInvestment,
+  calculateCD,
   formatCurrency,
   parseNumberInput,
 } from "./finance.ts";
@@ -323,10 +328,82 @@ assert("Loan#1 月供", compared[0].monthlyPayment, 299.71, 0.1);
 assert("Loan#1 总利息", compared[0].totalInterest, 789.52, 1);
 
 /* -----------------------------------------------------------
- * 11. 格式化与解析工具
+ * 12. 工资换算
  * ----------------------------------------------------------- */
 
-console.log("\n【11】Formatting & Parsing\n");
+console.log("\n【12】Salary Conversion\n");
+
+// $25/hr, 40hr/week
+// Python Decimal: weekly=1000, biweekly=2000, semiMonthly=2166.67, monthly=4333.33, annual=52000
+const sal = calculateSalary(25, 40);
+assert("Salary 周薪", sal.weekly, 1000, 0.01);
+assert("Salary 双周薪", sal.biweekly, 2000, 0.01);
+assert("Salary 半月薪", sal.semiMonthly, 2166.67, 0.01);
+assert("Salary 月薪", sal.monthly, 4333.33, 0.01);
+assert("Salary 年薪", sal.annual, 52000, 0.01);
+
+// annualToHourly: $52000 → $25/hr
+assert("annualToHourly($52k)", annualToHourly(52000, 40), 25, 0.01);
+
+/* -----------------------------------------------------------
+ * 13. 通货膨胀
+ * ----------------------------------------------------------- */
+
+console.log("\n【13】Inflation\n");
+
+// $10000 @ 3% × 20 年
+// Python Decimal: futureValue=18061.11, purchasingPower=5536.76, totalInflation=8061.11
+const infl = calculateInflation(10000, 3, 20);
+assert("Inflation 未来等价金额", infl.futureValue, 18061.11, 0.5);
+assert("Inflation 今天 $1 的未来购买力（按 $10k 计）", infl.purchasingPower, 5536.76, 0.5);
+assert("Inflation 累计涨幅", infl.totalInflation, 8061.11, 0.5);
+
+/* -----------------------------------------------------------
+ * 14. 通用投资
+ * ----------------------------------------------------------- */
+
+console.log("\n【14】Investment (general)\n");
+
+// $10k 初始 + $500/月 @ 7% × 20 年（应与 recurring 一致：$300,850.72）
+// Python Decimal 验证 + 与 recurring 交叉验证
+const inv = calculateInvestment(10000, 500, 7, 12, 20);
+assert("Investment 终值", inv.futureValue, 300850.72, 1);
+assert("Investment 总投入", inv.totalContributions, 130000, 0.01);
+assert("Investment 总利息", inv.totalInterest, 170850.72, 1);
+// yearlyBreakdown 应有 20 条
+assert("Investment 年度明细数量", inv.yearlyBreakdown.length, 20, 0);
+// 第 1 年的 balance 应该 > 初始 + 12 次月供
+console.log(`  第1年 balance: ${inv.yearlyBreakdown[0].balance.toFixed(2)} (应 > 16000)`);
+
+/* -----------------------------------------------------------
+ * 15. 定期存款 CD
+ * ----------------------------------------------------------- */
+
+console.log("\n【15】CD\n");
+
+// $10k @ 5% APY × 1 年（日复利）
+// Python Decimal: finalValue=10512.67, totalInterest=512.67, effectiveApy=5.1267
+const cd1 = calculateCD(10000, 5, 1);
+assert("CD 1年终值", cd1.finalValue, 10512.67, 0.5);
+assert("CD 1年利息", cd1.totalInterest, 512.67, 0.5);
+assert("CD 有效APY", cd1.effectiveApy, 5.1267, 0.01);
+
+// $10k @ 5% APY × 5 年
+// Python Decimal: finalValue=12840.03, totalInterest=2840.03
+const cd5 = calculateCD(10000, 5, 5);
+assert("CD 5年终值", cd5.finalValue, 12840.03, 0.5);
+assert("CD 5年利息", cd5.totalInterest, 2840.03, 0.5);
+
+// 边界：0% APY
+const cd0 = calculateCD(10000, 0, 1);
+assert("CD 0% 终值 = 本金", cd0.finalValue, 10000, 0.01);
+assert("CD 0% 利息 = 0", cd0.totalInterest, 0, 0.01);
+
+/* -----------------------------------------------------------
+ * 16. 格式化与解析工具
+ * ----------------------------------------------------------- */
+
+console.log("\n【16】Formatting & Parsing\n");
 
 console.log("\n【6】Formatting & Parsing\n");
 

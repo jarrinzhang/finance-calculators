@@ -140,6 +140,66 @@ export const calculators: CalculatorMeta[] = [
     emoji: "⚖️",
     accent: "from-cyan-500 to-cyan-700",
   },
+  {
+    slug: "salary-calculator",
+    path: "/calculators/salary-calculator",
+    name: "Salary Calculator",
+    shortDesc:
+      "Convert between hourly wage and annual salary. See your pay in every format.",
+    seoDescription:
+      "Free salary calculator. Convert hourly wage to annual salary, monthly, weekly, and bi-weekly pay. See your true earnings and estimated take-home pay.",
+    icon: `<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>`,
+    emoji: "💼",
+    accent: "from-indigo-500 to-indigo-700",
+  },
+  {
+    slug: "tip-calculator",
+    path: "/calculators/tip-calculator",
+    name: "Tip Calculator",
+    shortDesc:
+      "Calculate the perfect tip and split the bill across any group size.",
+    seoDescription:
+      "Free tip calculator. Calculate tips for any bill amount, split the total between friends, and customize the tip percentage in seconds.",
+    icon: `<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`,
+    emoji: "🍽️",
+    accent: "from-emerald-500 to-emerald-700",
+  },
+  {
+    slug: "inflation-calculator",
+    path: "/calculators/inflation-calculator",
+    name: "Inflation Calculator",
+    shortDesc:
+      "See how inflation erodes purchasing power and what your money will be worth.",
+    seoDescription:
+      "Free inflation calculator. Find out how much your money will be worth in the future and how much purchasing power inflation eats away over time.",
+    icon: `<polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/>`,
+    emoji: "📉",
+    accent: "from-rose-500 to-rose-700",
+  },
+  {
+    slug: "investment-calculator",
+    path: "/calculators/investment-calculator",
+    name: "Investment Calculator",
+    shortDesc:
+      "Project the future value of your investments with regular contributions.",
+    seoDescription:
+      "Free investment calculator. Project how much your portfolio will grow with initial capital and monthly contributions, including compound growth charts.",
+    icon: `<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`,
+    emoji: "💰",
+    accent: "from-indigo-500 to-indigo-700",
+  },
+  {
+    slug: "cd-calculator",
+    path: "/calculators/cd-calculator",
+    name: "CD Calculator",
+    shortDesc:
+      "Calculate interest earned on a Certificate of Deposit at any APY and term.",
+    seoDescription:
+      "Free CD calculator. Calculate interest earned on a Certificate of Deposit with daily compounding. Compare CD rates and terms from 6 months to 5 years.",
+    icon: `<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`,
+    emoji: "🏦",
+    accent: "from-cyan-500 to-cyan-700",
+  },
 ];
 
 /** 按 slug 查找 */

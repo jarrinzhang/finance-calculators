@@ -1,0 +1,75 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TipCalculator from "../../components/calculators/TipCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "tip-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <TipCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How much should you tip?</h2>
+    <p>
+      Tipping etiquette can be confusing, and it varies by country, service, and situation. This
+      calculator handles the math for you &mdash; just enter the bill, pick a tip percentage, and
+      split it across any number of people.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">U.S. tipping guide</h3>
+    <ul>
+      <li><strong>Restaurants (sit-down):</strong> 15&ndash;20% (18% is a safe default)</li>
+      <li><strong>Exceptional service:</strong> 22&ndash;25%</li>
+      <li><strong>Bars:</strong> $1&ndash;2 per drink, or 15&ndash;20% of the tab</li>
+      <li><strong>Food delivery:</strong> 15&ndash;20% or $5 minimum</li>
+      <li><strong>Taxis/rideshare:</strong> 10&ndash;15%</li>
+      <li><strong>Hairstylists:</strong> 15&ndash;20%</li>
+      <li><strong>Hotel housekeeping:</strong> $2&ndash;5 per night</li>
+      <li><strong>Counter service / fast food:</strong> no tip expected</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">When you should NOT tip</h3>
+    <ul>
+      <li>Fast food and counter-service restaurants</li>
+      <li>Professionals like doctors, lawyers, or government employees</li>
+      <li>Business owners (they set their own prices)</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Tipping outside the U.S.</h3>
+    <p>
+      Tipping customs differ dramatically worldwide. In Japan, tipping can be considered rude. In
+      much of Europe, a service charge is already included on the bill (look for "service compris"
+      or "servizio incluso"), and rounding up is appreciated. Always check local customs when
+      traveling.
+    </p>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

@@ -473,6 +473,187 @@ export function compareLoans(options: LoanOption[]): LoanComparisonResult[] {
 }
 
 /* ============================================================
+   工资换算（年薪 / 时薪 / 月薪 / 周薪）
+   ============================================================ */
+
+/**
+ * 工资换算：给定任一输入，推算所有其它单位
+ *
+ * 默认假设：每年工作 52 周，每月 12 个月。
+ * 双周 = 每两周发一次薪，每年 26 个发薪周期。
+ *
+ * @param hourlyRate 时薪
+ * @param hoursPerWeek 每周工时（默认 40）
+ */
+export function calculateSalary(
+  hourlyRate: number,
+  hoursPerWeek: number = 40
+): {
+  hourly: number;
+  weekly: number;
+  biweekly: number;
+  semiMonthly: number;
+  monthly: number;
+  annual: number;
+} {
+  const weekly = hourlyRate * hoursPerWeek;
+  const annual = weekly * 52;
+  return {
+    hourly: hourlyRate,
+    weekly,
+    biweekly: weekly * 2,
+    semiMonthly: annual / 24,
+    monthly: annual / 12,
+    annual,
+  };
+}
+
+/** 反向：从年薪算出时薪 */
+export function annualToHourly(
+  annualSalary: number,
+  hoursPerWeek: number = 40
+): number {
+  return annualSalary / (hoursPerWeek * 52);
+}
+
+/* ============================================================
+   通货膨胀（购买力换算）
+   ============================================================ */
+
+/**
+ * 计算通胀对未来购买力的侵蚀
+ *
+ * 未来需要多少钱，才能等价于今天的 X 元
+ *
+ * FV = PV * (1 + i)^n
+ *
+ * @param presentValue 今天的金额
+ * @param inflationRatePercent 年通胀率（%，如 3 表示 3%）
+ * @param years 年数
+ */
+export function calculateInflation(
+  presentValue: number,
+  inflationRatePercent: number,
+  years: number
+): {
+  futureValue: number; // 名义上需要的金额
+  purchasingPower: number; // 今天 X 元在 n 年后的实际购买力
+  totalInflation: number; // 累计价格涨幅（金额）
+} {
+  const i = percentToDecimal(inflationRatePercent);
+  const factor = Math.pow(1 + i, years);
+  const futureValue = presentValue * factor;
+  // 今天的 X 元，n 年后实际购买力
+  const purchasingPower = presentValue / factor;
+  const totalInflation = futureValue - presentValue;
+  return { futureValue, purchasingPower, totalInflation };
+}
+
+/** 历史通胀回算：过去的 $X 等于今天的多少 */
+export function calculateHistoricalInflation(
+  historicalAmount: number,
+  inflationRatePercent: number,
+  yearsAgo: number
+): number {
+  return calculateInflation(historicalAmount, inflationRatePercent, yearsAgo).futureValue;
+}
+
+/* ============================================================
+   通用投资计算（支持初始 + 定投 + 不同频率）
+   ============================================================ */
+
+export interface InvestmentResult {
+  futureValue: number;
+  totalContributions: number;
+  totalInterest: number;
+  /** 每年明细（用于趋势展示） */
+  yearlyBreakdown: { year: number; balance: number; contributions: number; interest: number }[];
+}
+
+/**
+ * 通用投资终值（一次性本金 + 定期追加）
+ *
+ * @param initialInvestment 初始本金
+ * @param periodicContribution 每期追加金额
+ * @param annualRatePercent 年化收益率 %
+ * @param periodsPerYear 每年期数（月=12，年=1）
+ * @param years 投资年限
+ */
+export function calculateInvestment(
+  initialInvestment: number,
+  periodicContribution: number,
+  annualRatePercent: number,
+  periodsPerYear: number,
+  years: number
+): InvestmentResult {
+  const r = percentToDecimal(annualRatePercent) / periodsPerYear;
+  const totalPeriods = periodsPerYear * years;
+
+  const yearlyBreakdown: InvestmentResult["yearlyBreakdown"] = [];
+  let balance = initialInvestment;
+  let totalContributions = initialInvestment;
+  let totalInterest = 0;
+
+  for (let period = 1; period <= totalPeriods; period++) {
+    const interest = balance * r;
+    balance += interest + periodicContribution;
+    totalContributions += periodicContribution;
+    totalInterest += interest;
+
+    // 每年记录一次
+    if (period % periodsPerYear === 0) {
+      yearlyBreakdown.push({
+        year: period / periodsPerYear,
+        balance,
+        contributions: totalContributions,
+        interest: totalInterest,
+      });
+    }
+  }
+
+  return {
+    futureValue: balance,
+    totalContributions,
+    totalInterest,
+    yearlyBreakdown,
+  };
+}
+
+/* ============================================================
+   定期存款 CD
+   ============================================================ */
+
+/**
+ * CD（定期存款）到期收益
+ *
+ * APY 公式：APY = (1 + r/n)^n - 1
+ *
+ * @param principal 本金
+ * @param apyPercent 年化收益率（APY %，银行通常直接标 APY）
+ * @param years CD 期限（年，支持 0.5 表示 6 个月）
+ * @param compoundsPerYear 每年复利次数（默认 365 = 日复利，银行常用）
+ */
+export function calculateCD(
+  principal: number,
+  apyPercent: number,
+  years: number,
+  compoundsPerYear: number = 365
+): {
+  finalValue: number;
+  totalInterest: number;
+  /** 等效年化收益率（已含复利） */
+  effectiveApy: number;
+} {
+  const r = percentToDecimal(apyPercent);
+  const finalValue =
+    principal * Math.pow(1 + r / compoundsPerYear, compoundsPerYear * years);
+  const totalInterest = finalValue - principal;
+  // 有效 APY（已是 apyPercent，这里复算确认）
+  const effectiveApy = (Math.pow(1 + r / compoundsPerYear, compoundsPerYear) - 1) * 100;
+  return { finalValue, totalInterest, effectiveApy };
+}
+
+/* ============================================================
    格式化工具
    ============================================================ */
 

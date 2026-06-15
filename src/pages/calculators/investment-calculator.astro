@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import InvestmentCalculator from "../../components/calculators/InvestmentCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "investment-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <InvestmentCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How the investment calculator works</h2>
+    <p>
+      Enter your initial investment, planned monthly contribution, expected annual return, and time
+      horizon. The calculator projects your portfolio's future value using monthly compounding,
+      breaks down how much comes from your contributions versus investment growth, and shows a
+      year-by-year growth chart.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The power of compound growth</h3>
+    <p>
+      Investing $500/month at 7% return for 20 years costs you $130,000 out of pocket. But your
+      final balance is roughly $300,851 &mdash; meaning compound growth contributed over $170,000,
+      more than your total contributions. The earlier you start, the larger this "free money"
+      slice becomes.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Realistic return assumptions</h3>
+    <ul>
+      <li><strong>S&amp;P 500 index funds:</strong> ~10% nominal / ~7% inflation-adjusted</li>
+      <li><strong>Balanced 60/40 portfolio:</strong> ~7&ndash;8%</li>
+      <li><strong>Bond-heavy portfolio:</strong> ~4&ndash;5%</li>
+      <li><strong>Real estate (REITs):</strong> ~8&ndash;9% (with higher volatility)</li>
+    </ul>
+    <p class="text-sm">
+      Always use <em>inflation-adjusted</em> returns (typically 2&ndash;3 percentage points lower
+      than nominal) for retirement planning. A "10% return" looks great, but only ~7% of it is real
+      wealth growth.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Investment principles that beat the math</h3>
+    <ul>
+      <li><strong>Start early:</strong> 10 extra years of compounding often beats doubling your contribution</li>
+      <li><strong>Keep costs low:</strong> index funds (0.03% fee) beat managed funds (1%+ fee) over decades</li>
+      <li><strong>Don't time the market:</strong> time <em>in</em> the market beats timing the market</li>
+      <li><strong>Diversify:</strong> never bet your future on a single stock or sector</li>
+      <li><strong>Automate:</strong> set up automatic monthly investing so you never skip a contribution</li>
+    </ul>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

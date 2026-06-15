@@ -1,0 +1,82 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import InflationCalculator from "../../components/calculators/InflationCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "inflation-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <InflationCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">What is inflation?</h2>
+    <p>
+      Inflation is the rate at which prices rise over time, eroding the purchasing power of money.
+      If inflation is 3% per year, what costs $100 today will cost about $103 next year &mdash; and
+      $181 in 20 years. The same $100 bill, kept under a mattress, would buy roughly $55 worth of
+      goods in today's money after those 20 years.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The inflation formula</h3>
+    <p class="rounded-lg bg-gray-50 px-4 py-3 font-mono text-sm">
+      Future Value = Today's Value × (1 + inflation rate)<sup>years</sup>
+    </p>
+    <p class="text-sm">
+      At 3% annual inflation, $10,000 today becomes $18,061 in 20 years &mdash; meaning you'd need
+      $18,061 then to buy what $10,000 buys now.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Why inflation matters for your savings</h3>
+    <p>
+      If your savings earn less than the inflation rate, you're losing money in real terms. This is
+      why "safe" options like a 0% checking account can be risky over long periods. To stay ahead:
+    </p>
+    <ul>
+      <li><strong>High-yield savings:</strong> currently 4&ndash;5% APY (roughly matches inflation)</li>
+      <li><strong>I Bonds / TIPS:</strong> government bonds designed to track inflation</li>
+      <li><strong>Stocks:</strong> historically return 7&ndash;10% (well above inflation)</li>
+      <li><strong>Real estate:</strong> property values and rents tend to rise with inflation</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">U.S. inflation history</h3>
+    <ul>
+      <li><strong>Long-term average:</strong> ~3% per year</li>
+      <li><strong>2010&ndash;2019 (low inflation era):</strong> ~1.8% per year</li>
+      <li><strong>2022 (peak):</strong> 9.1% (highest in 40 years)</li>
+      <li><strong>2026 (current):</strong> ~3% (returning toward normal)</li>
+    </ul>
+    <p class="text-sm">
+      The Federal Reserve targets 2% inflation as "healthy." Periods of high inflation (5%+)
+      historically cause economic strain and tend to be followed by aggressive interest rate hikes.
+    </p>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>

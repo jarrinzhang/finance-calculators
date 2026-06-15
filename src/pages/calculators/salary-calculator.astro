@@ -1,0 +1,82 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SalaryCalculator from "../../components/calculators/SalaryCalculator.tsx";
+import RelatedCalculators from "../../components/calculators/RelatedCalculators.astro";
+import { getCalculator } from "../../data/calculators";
+
+const slug = "salary-calculator";
+const calc = getCalculator(slug)!;
+const path = `/calculators/${slug}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: calc.name,
+  url: new URL(path, Astro.site).href,
+  description: calc.seoDescription,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any (Web Browser)",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout title={calc.name} description={calc.seoDescription} path={path} jsonLd={jsonLd} showTopAd={true}>
+  <nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-brand-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-700">{calc.name}</span>
+  </nav>
+
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{calc.name}</h1>
+    <p class="mt-2 text-gray-600">{calc.shortDesc}</p>
+  </header>
+
+  <SalaryCalculator client:load />
+
+  <section class="mt-12 max-w-3xl prose prose-sm prose-gray">
+    <h2 class="text-xl font-bold text-gray-900">How the salary calculator works</h2>
+    <p>
+      Enter your hourly rate (or annual salary) and your typical hours per week. The calculator
+      instantly converts your pay into every common format &mdash; hourly, weekly, bi-weekly,
+      semi-monthly, monthly, and annual &mdash; plus an estimated take-home pay after taxes.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">The standard formula</h3>
+    <p>
+      Annual salary = hourly rate × hours per week × 52 weeks. For example, $25/hour at 40 hours/week
+      = $25 × 40 × 52 = $52,000/year, or about $4,333/month.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Pay schedule differences</h3>
+    <ul>
+      <li><strong>Weekly:</strong> 52 paychecks/year</li>
+      <li><strong>Bi-weekly:</strong> 26 paychecks/year (two "extra" checks in some months)</li>
+      <li><strong>Semi-monthly:</strong> 24 paychecks/year (typically 1st and 15th)</li>
+      <li><strong>Monthly:</strong> 12 paychecks/year</li>
+    </ul>
+    <p class="text-sm">
+      Note: bi-weekly and semi-monthly are <em>not</em> the same. Bi-weekly employees receive 26
+      paychecks, while semi-monthly employees receive 24. Over a year, bi-weekly pays slightly more
+      per paycheck but the same annual total.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">U.S. salary benchmarks (2026)</h3>
+    <ul>
+      <li><strong>Median household income:</strong> ~$80,000/year</li>
+      <li><strong>Median individual income:</strong> ~$58,000/year</li>
+      <li><strong>Federal minimum wage:</strong> $7.25/hour (since 2009)</li>
+      <li><strong>"Living wage" (varies by city):</strong> ~$16&ndash;$25/hour</li>
+    </ul>
+
+    <h3 class="text-lg font-semibold text-gray-900 mt-6">Don't forget about taxes</h3>
+    <p>
+      The estimated take-home figure assumes ~22% combined federal/state taxes. Your actual rate
+      depends on filing status, deductions, state (no income tax in TX, FL, WA, etc.), and retirement
+      contributions. For precise numbers, use the IRS Tax Estimator or consult a tax professional.
+    </p>
+  </section>
+
+  <RelatedCalculators currentSlug={slug} />
+</BaseLayout>
