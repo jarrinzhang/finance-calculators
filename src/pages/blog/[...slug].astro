@@ -1,0 +1,31 @@
+---
+/**
+ * Blog 详情页 - /blog/[...slug]
+ *
+ * 从 content collection 生成所有文章的静态路径
+ */
+import { getCollection, render } from "astro:content";
+import BlogPost from "../../layouts/BlogPost.astro";
+
+// 1. 生成所有文章的静态路径
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+// 2. 渲染 Markdown
+const { Content } = await render(post);
+
+// 3. 估算阅读时间（frontmatter 优先，否则按字数估算）
+//    粗略算法：英文约 200-250 词/分钟
+const readingTime =
+  post.data.readingTime ??
+  Math.max(1, Math.ceil(((post.body ?? "") as string).split(/\s+/).length / 225));
+---
+
+<BlogPost entry={post} Content={Content} readingTime={readingTime} />
